@@ -57,7 +57,13 @@ else
 fi
 
 
+CPU=$(top -bn1 | awk '/Cpu\(s\)/ {print 100 - $8}' | cut -d. -f1)
 
+if [ "$CPU" -gt 80 ]; then
+    echo "WARNING: CPU usage is above 80%"
+else
+    echo "CPU usage is normal"
+fi
 
 
 
