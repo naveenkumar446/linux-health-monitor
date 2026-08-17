@@ -48,7 +48,13 @@ else
     echo "Disk usage is normal"
 fi
 
+MEMORY=$(free | awk '/Mem:/ {printf "%.0f", $3/$2 * 100}')
 
+if [ "$MEMORY" -gt 80 ]; then
+    echo "WARNING: Memory usage is above 80%"
+else
+    echo "Memory usage is normal"
+fi
 
 
 
