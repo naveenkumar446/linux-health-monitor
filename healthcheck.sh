@@ -38,5 +38,24 @@ echo "disk monitoring"
 df -h
 
 
+echo "===== Threshold Check ====="
+
+DISK=$(df / | awk 'NR==2 {print $5}' | tr -d '%')
+
+if [ "$DISK" -gt 80 ]; then
+    echo "WARNING: Disk usage is above 80%"
+else
+    echo "Disk usage is normal"
+fi
+
+
+
+
+
+
+
+
+
+
 
 
