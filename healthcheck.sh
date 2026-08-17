@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -x
+
 echo "==== linux server health check"
 
 echo "hostname:"
@@ -24,6 +26,16 @@ nproc
 
 echo "cpu load:"
 uptime
+
+echo "===== memory information ====="
+
+echo "memory usage"
+free -h
+
+
+
+
+
 
 
 
