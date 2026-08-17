@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -x
+
 
 echo "==== linux server health check"
 
@@ -32,9 +32,10 @@ echo "===== memory information ====="
 echo "memory usage"
 free -h
 
+echo "===== disk information ===== "
 
-
-
+echo "disk monitoring"
+df -h
 
 
 
