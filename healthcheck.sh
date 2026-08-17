@@ -17,5 +17,13 @@ free -h
 echo "disk:"
 df -h
 
+echo "===== cpu information ===="
+
+echo "no of cpus:"
+nproc
+
+echo "cpu load:"
+uptime
+
 
 
