@@ -1,5 +1,11 @@
 #!/bin/bash
 
+
+GREEN='\033[0;32m'
+RED='\033[0;31m'
+NC='\033[0m'
+
+
 system_info() {
     echo "==== Linux Server Health Check ===="
 
@@ -42,35 +48,33 @@ disk_check() {
     echo "Disk Monitoring:"
     df -h
 }
-
 threshold_check() {
     echo "===== Threshold Check ====="
 
-    DISK=$(df / | awk 'NR==2 {print $5}' | tr -d '%')
+    DISK=$(df / | awk 'NR==2 {gsub("%","",$5); print $5}')
 
     if [ "$DISK" -gt 80 ]; then
-        echo "WARNING: Disk usage is above 80%"
+        echo -e "${RED}WARNING: Disk usage is above 80%${NC}"
     else
-        echo "Disk usage is normal"
+        echo -e "${GREEN}Disk usage is normal${NC}"
     fi
 
     MEMORY=$(free | awk '/Mem:/ {printf "%.0f", $3/$2 * 100}')
 
     if [ "$MEMORY" -gt 80 ]; then
-        echo "WARNING: Memory usage is above 80%"
+        echo -e "${RED}WARNING: Memory usage is above 80%${NC}"
     else
-        echo "Memory usage is normal"
+        echo -e "${GREEN}Memory usage is normal${NC}"
     fi
 
-    CPU=$(top -bn1 | awk '/Cpu\(s\)/ {print 100 - $8}' | cut -d. -f1)
+    CPU=$(mpstat 1 1 | awk '/Average:/ && $2 == "all" {printf "%.0f", 100 - $NF}')
 
     if [ "$CPU" -gt 80 ]; then
-        echo "WARNING: CPU usage is above 80%"
+        echo -e "${RED}WARNING: CPU usage is above 80%${NC}"
     else
-        echo "CPU usage is normal"
+        echo -e "${GREEN}CPU usage is normal${NC}"
     fi
 }
-
 system_info
 cpu_check
 memory_check
