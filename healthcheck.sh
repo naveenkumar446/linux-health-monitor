@@ -1,6 +1,17 @@
 #!/bin/bash
 
 
+LOG_DIR="logs"
+LOG_FILE="$LOG_DIR/healthcheck.log"
+
+mkdir -p "$LOG_DIR"
+
+exec > >(tee -a "$LOG_FILE") 2>&1
+
+echo "========================================"
+echo "Health Check Started: $(date '+%Y-%m-%d %H:%M:%S')"
+echo "========================================"
+
 GREEN='\033[0;32m'
 RED='\033[0;31m'
 NC='\033[0m'
@@ -51,6 +62,7 @@ disk_check() {
 threshold_check() {
     echo "===== Threshold Check ====="
 
+      
     DISK=$(df / | awk 'NR==2 {gsub("%","",$5); print $5}')
 
     if [ "$DISK" -gt 80 ]; then
@@ -81,6 +93,9 @@ memory_check
 disk_check
 threshold_check
 
+echo "========================================"
+echo "Health Check Completed: $(date '+%Y-%m-%d %H:%M:%S')"
+echo "========================================"
 
 
 
