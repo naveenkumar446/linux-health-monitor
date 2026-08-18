@@ -1,7 +1,7 @@
 #!/bin/bash
 
 
-LOG_DIR="logs"
+LOG_DIR="/home/ubuntu/linux-health-monitor/logs"
 LOG_FILE="$LOG_DIR/healthcheck.log"
 
 mkdir -p "$LOG_DIR"
