@@ -1,71 +1,81 @@
 #!/bin/bash
 
+system_info() {
+    echo "==== Linux Server Health Check ===="
 
+    echo "Hostname:"
+    hostname
 
-echo "==== linux server health check"
+    echo "Uptime:"
+    uptime
 
-echo "hostname:"
-hostname
+    echo "CPU:"
+    nproc
 
-echo "uptime:"
-uptime
+    echo "Memory:"
+    free -h
 
-echo "cpu:"
-nproc
+    echo "Disk:"
+    df -h
+}
 
-echo "memory:"
-free -h
+cpu_check() {
+    echo "===== CPU Information ====="
 
-echo "disk:"
-df -h
+    echo "Number of CPUs:"
+    nproc
 
-echo "===== cpu information ===="
+    echo "CPU Load:"
+    uptime
+}
 
-echo "no of cpus:"
-nproc
+memory_check() {
+    echo "===== Memory Information ====="
 
-echo "cpu load:"
-uptime
+    echo "Memory Usage:"
+    free -h
+}
 
-echo "===== memory information ====="
+disk_check() {
+    echo "===== Disk Information ====="
 
-echo "memory usage"
-free -h
+    echo "Disk Monitoring:"
+    df -h
+}
 
-echo "===== disk information ===== "
+threshold_check() {
+    echo "===== Threshold Check ====="
 
-echo "disk monitoring"
-df -h
+    DISK=$(df / | awk 'NR==2 {print $5}' | tr -d '%')
 
+    if [ "$DISK" -gt 80 ]; then
+        echo "WARNING: Disk usage is above 80%"
+    else
+        echo "Disk usage is normal"
+    fi
 
-echo "===== Threshold Check ====="
+    MEMORY=$(free | awk '/Mem:/ {printf "%.0f", $3/$2 * 100}')
 
-DISK=$(df / | awk 'NR==2 {print $5}' | tr -d '%')
+    if [ "$MEMORY" -gt 80 ]; then
+        echo "WARNING: Memory usage is above 80%"
+    else
+        echo "Memory usage is normal"
+    fi
 
-if [ "$DISK" -gt 80 ]; then
-    echo "WARNING: Disk usage is above 80%"
-else
-    echo "Disk usage is normal"
-fi
+    CPU=$(top -bn1 | awk '/Cpu\(s\)/ {print 100 - $8}' | cut -d. -f1)
 
-MEMORY=$(free | awk '/Mem:/ {printf "%.0f", $3/$2 * 100}')
+    if [ "$CPU" -gt 80 ]; then
+        echo "WARNING: CPU usage is above 80%"
+    else
+        echo "CPU usage is normal"
+    fi
+}
 
-if [ "$MEMORY" -gt 80 ]; then
-    echo "WARNING: Memory usage is above 80%"
-else
-    echo "Memory usage is normal"
-fi
-
-
-CPU=$(top -bn1 | awk '/Cpu\(s\)/ {print 100 - $8}' | cut -d. -f1)
-
-if [ "$CPU" -gt 80 ]; then
-    echo "WARNING: CPU usage is above 80%"
-else
-    echo "CPU usage is normal"
-fi
-
-
+system_info
+cpu_check
+memory_check
+disk_check
+threshold_check
 
 
 
