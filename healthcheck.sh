@@ -62,11 +62,14 @@ disk_check() {
 threshold_check() {
     echo "===== Threshold Check ====="
 
+    STATUS=0
+
       
     DISK=$(df / | awk 'NR==2 {gsub("%","",$5); print $5}')
 
     if [ "$DISK" -gt 80 ]; then
         echo -e "${RED}WARNING: Disk usage is above 80%${NC}"
+	STATUS=1
     else
         echo -e "${GREEN}Disk usage is normal${NC}"
     fi
@@ -75,6 +78,7 @@ threshold_check() {
 
     if [ "$MEMORY" -gt 80 ]; then
         echo -e "${RED}WARNING: Memory usage is above 80%${NC}"
+	STATUS=1
     else
         echo -e "${GREEN}Memory usage is normal${NC}"
     fi
@@ -83,19 +87,25 @@ threshold_check() {
 
     if [ "$CPU" -gt 80 ]; then
         echo -e "${RED}WARNING: CPU usage is above 80%${NC}"
+	STATUS=1
     else
         echo -e "${GREEN}CPU usage is normal${NC}"
     fi
+    
+    return $STATUS
 }
 system_info
 cpu_check
 memory_check
 disk_check
 threshold_check
+STATUS=$?
 
 echo "========================================"
 echo "Health Check Completed: $(date '+%Y-%m-%d %H:%M:%S')"
 echo "========================================"
+
+exit $STATUS
 
 
 
